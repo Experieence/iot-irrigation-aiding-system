@@ -1,5 +1,5 @@
 # Wispour
-### IoT Irrigation System
+### IoT Irrigation Aiding System
 
 Wispour is a final year project focused on designing an IoT-based irrigation aiding
 system to optimize water usage through sensor-based monitoring and automated control.
