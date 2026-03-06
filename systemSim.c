@@ -43,9 +43,11 @@ int main()
     // States 
     int voltage = 0;
     int isDry = 0; 
-    int threshold = 600; 
-    
-    
+    int threshold; 
+
+    printf("Enter a soil dryness threshold (0-1023):");
+    scanf("%d", &threshold);
+
     //control layer 
     simulation(&voltage, &isDry, threshold);
     //sleep(CHECK_INTERVAL); for 10 min
