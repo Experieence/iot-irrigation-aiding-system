@@ -45,12 +45,21 @@ void averageMsg(int *average)
     printf("Avarage of readings: %d\n", *average);
 }
 
-void dryStatusMsg(int isDry)
+void dryStatusMsg(int dryCount)
 {
-    if (isDry >= 5)
+    if (dryCount >= 5)
     {
         printf("SOIL CONDITON: DRY\n");
     }
+}
+
+void wetStatusMsg(int wetCount)
+{
+    if (wetCount >= 5)
+    {
+        printf("SOIL CONDITON: WET\n");
+    }
+    
 }
 
 // System Logic 
@@ -71,30 +80,42 @@ void sumOfSamples(int *sum ,int *readings, int count)
     }
 }
 
-void averageOfSamples(int *average, int sum)
+void averageOfSamples(int *average, int sum, int count)
 {
-    *average = sum/10;  
+    *average = sum/count;  
 }
 
-void checkDryness(int average, int threshold, int *isDry)
+void checkDryness(int average, int threshold, int *dryCount, int *wetCount)
 {
-    if (average < threshold)
+    if(*dryCount >= 5) return; 
+    if (average < threshold)  
         {
-            (*isDry)++;
-            if (*isDry >= 5)
+            (*dryCount)++;
+            if(*dryCount >= 5) 
             {
-                dryStatusMsg(*isDry);
-                *isDry = 0; 
+                dryStatusMsg(*dryCount); 
+                *wetCount = 0; 
             }
-        }
-        //else
-        //{
-            //*isDry = 0; //calibaration since using random values right now     
-        //}
+        } 
 }
 
-
-
+void checkWetness (int average, int threshold, int *wetCount, int *dryCount)
+{
+    if(*wetCount >= 5) return;
+    if (average > threshold)
+    {
+        (*wetCount)++;
+        if(*wetCount >= 5)
+        {
+            wetStatusMsg(*wetCount);
+            *dryCount = 0;
+        }
+    }
+    else 
+    {
+        *wetCount = 0; 
+    }
+}
 
 int main() 
 {
@@ -104,25 +125,29 @@ int main()
     int count = 10;
     int average = 0; 
     int sum = 0; 
-    int isDry = 0; 
+    int dryCount = 0; 
+    int wetCount = 5; 
 
-    int threshold = 16500; 
+    int threshold = 16500; // randomly set threshold value
 
 
 
+    // if i wanted user set threshold but its a sim so no need 
     //printf("Enter a soil dryness threshold (0-1023):");
     //scanf("%d", &threshold);
 
     //control layer 
     while (1)
     {
+        // technically i wont have the sample reading being shown... only wet and dry states
         sampleReadings(readings, count);
         // Testing: Worked readingMsg(readings, count);
         sumOfSamples(&sum,readings,count);
         // Testing: Worked sumMsg(&sum);
-        averageOfSamples(&average, sum);
+        averageOfSamples(&average, sum, count);
         averageMsg(&average);
-        checkDryness(average, threshold, &isDry); 
+        checkDryness(average, threshold, &dryCount, &wetCount);
+        checkWetness(average, threshold, &wetCount, &dryCount); 
 
         sum = 0; 
         average =0;
