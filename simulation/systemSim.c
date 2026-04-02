@@ -45,22 +45,25 @@ void averageMsg(int *average)
     printf("Avarage of readings: %d\n", *average);
 }
 
-void dryStatusMsg(int dryCount)
+
+void currentStateMsg(int currentState)
 {
-    if (dryCount >= 5)
+    switch (currentState)
     {
+    case(0):
+        printf("SOIL CONDITON: WET\n");
+        break; 
+    case(1):
         printf("SOIL CONDITON: DRY\n");
+        break;
+    default:
+        printf("SOIL CONDITON: UNKOWN\n");
     }
+
+
 }
 
-void wetStatusMsg(int wetCount)
-{
-    if (wetCount >= 5)
-    {
-        printf("SOIL CONDITON: WET\n");
-    }
-    
-}
+
 
 // System Logic 
 void sampleReadings(int *readings, int count)
@@ -85,29 +88,31 @@ void averageOfSamples(int *average, int sum, int count)
     *average = sum/count;  
 }
 
-void checkDryness(int average, int threshold, int *dryCount, int *wetCount)
+void checkDryness(int average, int threshold, int *dryCount, int *wetCount, int *currentState)
 {
-    if(*dryCount >= 5) return; 
+    if(*currentState == 1) return;  
     if (average < threshold)  
         {
             (*dryCount)++;
             if(*dryCount >= 5) 
             {
-                dryStatusMsg(*dryCount); 
+                *currentState = 1;  
+                currentStateMsg(*currentState); 
                 *wetCount = 0; 
             }
         } 
 }
 
-void checkWetness (int average, int threshold, int *wetCount, int *dryCount)
+void checkWetness (int average, int threshold, int *wetCount, int *dryCount, int *currentState)
 {
-    if(*wetCount >= 5) return;
-    if (average > threshold)
+    if(*currentState == 0) return;
+    if (average >= threshold)
     {
         (*wetCount)++;
         if(*wetCount >= 5)
         {
-            wetStatusMsg(*wetCount);
+            *currentState = 0;
+            currentStateMsg(*currentState);
             *dryCount = 0;
         }
     }
@@ -126,7 +131,8 @@ int main()
     int average = 0; 
     int sum = 0; 
     int dryCount = 0; 
-    int wetCount = 5; 
+    int wetCount = 0; 
+    int currentState = 2; // there are 3 states unknown = 2 dry = 1 wet = 0 started off with 2 
 
     int threshold = 16500; // randomly set threshold value
 
@@ -145,9 +151,9 @@ int main()
         sumOfSamples(&sum,readings,count);
         // Testing: Worked sumMsg(&sum);
         averageOfSamples(&average, sum, count);
-        averageMsg(&average);
-        checkDryness(average, threshold, &dryCount, &wetCount);
-        checkWetness(average, threshold, &wetCount, &dryCount); 
+        //Testing: Worked averageMsg(&average); 
+        checkDryness(average, threshold, &dryCount, &wetCount, &currentState);
+        checkWetness(average, threshold, &wetCount, &dryCount, &currentState); 
 
         sum = 0; 
         average =0;
