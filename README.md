@@ -18,7 +18,7 @@ system to optimize water usage through sensor-based monitoring and automated con
 - Web-based user interface
 
 ## System Architecture
-![System Diagram](designs/Block diagram.png)
+![System Diagram](designs/Block Diagram.png)
 
 
 
